@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Girlfriend Day, My Love!</title>
+    <!-- Google Fonts for an elegant look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- General Styling --- */
+        :root {
+            --pink: #ff7a9b;
+            --light-pink: #ff9ac1;
+            --purple: #d1c4e9;
+            --cream: #fffde7;
+            --white: #ffffff;
+            --text-dark: #4a5568;
+            --text-light: #718096;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevents scrollbars from the canvas */
+            background: linear-gradient(to bottom right, #fce4ec, var(--purple), var(--cream));
+            color: var(--text-dark);
+        }
+
+        /* --- Animations --- */
+
+        /* Keyframes for the glowing text effect */
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 10px var(--white), 0 0 20px var(--pink), 0 0 30px var(--pink);
+            }
+            50% {
+                text-shadow: 0 0 20px var(--white), 0 0 30px var(--light-pink), 0 0 40px var(--light-pink);
+            }
+        }
+
+        /* Keyframes for the fade-in effect on page load */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply fade-in animation with delays for a staggered effect */
+        .fade-in-1 {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .fade-in-2 {
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+        .fade-in-3 {
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+
+
+        /* --- Layout and Components --- */
+
+        /* Canvas for the floating hearts background */
+        #hearts-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind content */
+        }
+
+        /* Main content container */
+        main {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main Heading */
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem; /* Mobile first font size */
+            color: var(--white);
+            animation: glow 2.5s ease-in-out infinite;
+            margin: 0;
+        }
+
+        /* Heartfelt Message */
+        p.heartfelt-message {
+            margin-top: 1.5rem;
+            font-size: 1.125rem; /* 18px */
+            color: var(--text-dark);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        /* Surprise Button */
+        #surprise-button {
+            margin-top: 2rem;
+            padding: 0.75rem 2rem;
+            background-color: var(--pink);
+            color: var(--white);
+            font-weight: 600;
+            border: none;
+            border-radius: 9999px; /* pill shape */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #surprise-button:hover {
+            background-color: var(--light-pink);
+            transform: scale(1.05);
+        }
+
+        /* --- Modal Popup --- */
+        #surprise-modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        
+        #surprise-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #modal-content {
+            background-color: var(--white);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem 2.5rem;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #surprise-modal.visible #modal-content {
+             transform: scale(1);
+        }
+
+        #modal-content h2 {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 700;
+            color: var(--pink);
+            margin: 0;
+        }
+
+        #modal-content p {
+            margin-top: 1rem;
+            color: var(--text-light);
+        }
+
+        #close-modal-button {
+            margin-top: 1.5rem;
+            padding: 0.5rem 1.5rem;
+            background-color: var(--purple);
+            color: var(--white);
+            font-weight: 600;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #close-modal-button:hover {
+            background-color: #b39ddb; /* A darker purple */
+        }
+        
+        /* --- Responsive Design --- */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 4.5rem; /* Larger font for desktops */
+            }
+            p.heartfelt-message {
+                font-size: 1.25rem; /* 20px */
+            }
+            #modal-content h2 {
+                font-size: 2.25rem; /* 36px */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas for the floating hearts background animation -->
+    <canvas id="hearts-canvas"></canvas>
+
+    <!-- Main content container -->
+    <main>
+        <!-- Main Heading -->
+        <h1 class="fade-in-1">
+            Happy Girlfriend's Day, My Love ❤️
+        </h1>
+
+        <!-- Heartfelt Message -->
+        <p class="heartfelt-message fade-in-2">
+            You make my life softer, brighter, and infinitely more beautiful. Thank you for being my love, my joy, and my Cutie pie💖.
+        </p>
+
+        <!-- Surprise Button -->
+        <button id="surprise-button" class="fade-in-3">
+            Click for a Surprise
+        </button>
+    </main>
+
+    <!-- Modal Popup -->
+    <div id="surprise-modal">
+        <div id="modal-content">
+            <h2>You are my everything 💖</h2>
+            <p>You’re the reason my heart smiles a little brighter every day. I love you more than I can ever say, and I’m so thankful for every moment we share. <p>With you the days feel lighter, and my love for you stretches beyond the skies, across infinite stars, and into forever.</p>
+
+
+                <P>(PS:- I know that it's a simple website but it is build with all my love for you)</P>
+            </p>
+            <button id="close-modal-button">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript for Animations and Interactivity ---
+
+        // 1. Floating Hearts Animation
+        const canvas = document.getElementById('hearts-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let hearts = [];
+        const numHearts = 50;
+
+        // Set canvas to full screen size and handle window resize
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Re-initialize hearts on resize to avoid clumping
+            hearts = [];
+            initHearts();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Heart object constructor
+        function Heart(x, y, size, speed, opacity) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.speed = speed;
+            this.opacity = opacity;
+        }
+
+        // Function to draw a single heart shape
+        function drawHeart(heart) {
+            ctx.beginPath();
+            const topCurveHeight = heart.size * 0.3;
+            ctx.moveTo(heart.x, heart.y + topCurveHeight);
+            // Top left curve
+            ctx.bezierCurveTo(heart.x, heart.y, heart.x - heart.size / 2, heart.y, heart.x - heart.size / 2, heart.y + topCurveHeight);
+            // Bottom left curve
+            ctx.bezierCurveTo(heart.x - heart.size / 2, heart.y + (heart.size + topCurveHeight) / 2, heart.x, heart.y + (heart.size + topCurveHeight) / 2, heart.x, heart.y + heart.size);
+            // Bottom right curve
+            ctx.bezierCurveTo(heart.x, heart.y + (heart.size + topCurveHeight) / 2, heart.x + heart.size / 2, heart.y + (heart.size + topCurveHeight) / 2, heart.x + heart.size / 2, heart.y + topCurveHeight);
+            // Top right curve
+            ctx.bezierCurveTo(heart.x + heart.size / 2, heart.y, heart.x, heart.y, heart.x, heart.y + topCurveHeight);
+            ctx.closePath();
+            ctx.fillStyle = `rgba(255, 182, 193, ${heart.opacity})`; // Light pink color
+            ctx.fill();
+        }
+
+        // Initialize hearts with random properties
+        function initHearts() {
+            for (let i = 0; i < numHearts; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 20 + 10; // Size between 10 and 30
+                const speed = Math.random() * 1 + 0.5; // Speed between 0.5 and 1.5
+                const opacity = Math.random() * 0.7 + 0.2; // Opacity between 0.2 and 0.9
+                hearts.push(new Heart(x, y, size, speed, opacity));
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            hearts.forEach(heart => {
+                // Move heart up
+                heart.y -= heart.speed;
+
+                // If heart goes off-screen, reset it to the bottom with a new random x position
+                if (heart.y < -heart.size) {
+                    heart.y = canvas.height + heart.size;
+                    heart.x = Math.random() * canvas.width;
+                }
+
+                drawHeart(heart);
+            });
+
+            requestAnimationFrame(animate);
+        }
+        
+        // Initial setup
+        resizeCanvas();
+        animate();
+
+        // 2. Modal Popup Logic
+        const surpriseButton = document.getElementById('surprise-button');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const modal = document.getElementById('surprise-modal');
+
+        // Function to open the modal
+        function openModal() {
+            modal.classList.add('visible');
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.classList.remove('visible');
+        }
+
+        surpriseButton.addEventListener('click', openModal);
+        closeModalButton.addEventListener('click', closeModal);
+
+        // Also close the modal if the user clicks on the background overlay
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
